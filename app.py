@@ -20,7 +20,7 @@ server = flask.Flask(__name__)
 app = dash.Dash(__name__)
 
 app.scripts.config.serve_locally = False
-dcc._js_dist[0]['external_url'] = 'https://cdn.plot.ly/plotly-finance-1.28.0.min.js'
+dcc._js_dist[0]['external_url'] = 'https://cdn2.plot.ly/plotly-finance-1.28.0.min.js'
 
 
 # In[]:
