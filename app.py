@@ -20,7 +20,7 @@ server = flask.Flask(__name__)
 app = dash.Dash(__name__)
 
 app.scripts.config.serve_locally = False
-dcc._js_dist[0]['external_url'] = 'https://cdn2.plot.ly/plotly-finance-1.28.0.min.js'
+dcc._js_dist[0]['external_url'] = 'https://cdn.plot.ly/plotly-finance-1.28.0.min.js'
 
 
 # In[]:
@@ -173,7 +173,7 @@ def update_graph_from_dropdown(dropdown, multi, arglist):
 
     # Get Quantmod Chart
     try:
-        df = web.DataReader(dropdown, 'google', dt.datetime(2016, 1, 1), dt.datetime.now())
+        df = web.DataReader(dropdown, 'stooq', dt.datetime(2016, 1, 1), dt.datetime.now())
         print('Loading')
         ch = qm.Chart(df)
     except:
