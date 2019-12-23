@@ -20,7 +20,7 @@ server = flask.Flask(__name__)
 app = dash.Dash(__name__)
 
 app.scripts.config.serve_locally = False
-dcc._js_dist[0]['external_url'] = 'https://cdn.plot.ly/plotly-finance-1.28.0.min.js'
+dcc._js_dist[0]['external_url'] = ''#'https://cdn.plot.ly/plotly-finance-1.28.0.min.js'
 
 
 # In[]:
@@ -31,7 +31,7 @@ cache = Cache(app.server, config={'CACHE_TYPE': 'simple'})
 timeout = 60 * 60  # 1 hour
 
 # Controls
-sp500 = ['AAPL', 'ABT', 'ABBV', 'ACN', 'ACE', 'ADBE', 'ADT', 'AAP', 'AES',
+sp500 = ['SBER','AAPL', 'ABT', 'ABBV', 'ACN', 'ACE', 'ADBE', 'ADT', 'AAP', 'AES',
          'AET', 'AFL', 'AMG', 'A', 'GAS', 'ARE', 'APD', 'AKAM', 'AA', 'AGN',
          'ALXN', 'ALLE', 'ADS', 'ALL', 'ALTR', 'MO', 'AMZN', 'AEE', 'AAL',
          'AEP', 'AXP', 'AIG', 'AMT', 'AMP', 'ABC', 'AME', 'AMGN', 'APH', 'APC',
@@ -89,6 +89,7 @@ sp500 = ['AAPL', 'ABT', 'ABBV', 'ACN', 'ACE', 'ADBE', 'ADT', 'AAP', 'AES',
 
 etf = ['SPY', 'XLF', 'GDX', 'EEM', 'VXX', 'IWM', 'UVXY', 'UXO', 'GDXJ', 'QQQ']
 
+
 tickers = sp500 + etf
 tickers = [dict(label=str(ticker), value=str(ticker))
            for ticker in tickers]
@@ -112,7 +113,7 @@ app.layout = html.Div(
                     dcc.Dropdown(
                         id='dropdown',
                         options=tickers,
-                        value='SPY',
+                        value='SBER',
                     ),
                 ],
                 style={
@@ -173,11 +174,15 @@ def update_graph_from_dropdown(dropdown, multi, arglist):
 
     # Get Quantmod Chart
     try:
-        df = web.DataReader(dropdown, 'stooq', dt.datetime(2016, 1, 1), dt.datetime.now())
+        #df = web.DataReader(dropdown, 'stooq', dt.datetime(2016, 1, 1), dt.datetime.now())
+        df = web.DataReader(dropdown, 'moex', dt.datetime(2016, 1, 1), dt.datetime.now()). \
+            rename(dict(zip(['OPEN', 'LOW', 'HIGH', 'CLOSE', 'VALUE'], ['Open', 'High', 'Low', 'Close', 'Volume'])),
+                   axis=1)
         print('Loading')
         ch = qm.Chart(df)
     except:
-        pass
+        print('finito')
+        raise
 
     # Get functions and arglist for technical indicators
     if arglist:
@@ -214,15 +219,16 @@ def update_graph_from_dropdown(dropdown, multi, arglist):
 # In[]:
 # External css
 
-external_css = ["https://fonts.googleapis.com/css?family=Overpass:400,400i,700,700i",
-                "https://cdn.rawgit.com/plotly/dash-app-stylesheets/c6a126a684eaaa94a708d41d6ceb32b28ac78583/dash-technical-charting.css"]
+external_css = []
+    #["https://fonts.googleapis.com/css?family=Overpass:400,400i,700,700i",
+     #           "https://cdn.rawgit.com/plotly/dash-app-stylesheets/c6a126a684eaaa94a708d41d6ceb32b28ac78583/dash-technical-charting.css"]
 
 for css in external_css:
     app.css.append_css({"external_url": css})
 
 if 'DYNO' in os.environ:
     app.scripts.append_script({
-        'external_url': 'https://cdn.rawgit.com/chriddyp/ca0d8f02a1659981a0ea7f013a378bbd/raw/e79f3f789517deec58f41251f7dbb6bee72c44ab/plotly_ga.js'
+        'external_url': ''# 'https://cdn.rawgit.com/chriddyp/ca0d8f02a1659981a0ea7f013a378bbd/raw/e79f3f789517deec58f41251f7dbb6bee72c44ab/plotly_ga.js'
     })
 
 
